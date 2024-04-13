@@ -17,8 +17,9 @@ impl Debug for Block {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(
             f,
-            "\n [Block index: {}]\n [hash: {}]\n [timestamp: {}]\n [transactions: {}]\n [nonce: {}]\n",
+            "\n [Block index  : {}]\n [previous hash: {}]\n [hash         : {}]\n [timestamp    : {}]\n [transactions : {}]\n [nonce        : {}]\n",
             &self.index,
+            &hex::encode(&self.prev_block_hash),
             &hex::encode(&self.hash),
             &self.timestamp,
             &self.transactions.len(),
@@ -40,7 +41,7 @@ impl Default for Block {
             transactions: String::from("genesis!"),
             nonce: 0,
             hash: vec![0; 32],
-            difficulty: 0x000fffffffffffffffffffffffffffff,
+            difficulty: 0x0000ffffffffffffffffffffffffffff,
         }
     }
 }
@@ -63,18 +64,15 @@ impl Block {
             difficulty,
         }
     }
-    pub fn mine(&mut self) {
+    pub fn set_hash(&mut self) {
         for nonce_attempt in 0..u64::max_value() {
             self.nonce = nonce_attempt;
-            let hash = self.hash();
-            if Block::check_difficulty(&hash, self.difficulty) {
+            let hash = self.get_hash();
+            if self.difficulty > difficulty_bytes_as_u128(&hash) {
                 self.hash = hash;
                 return;
             }
         }
-    }
-    fn check_difficulty(hash: &Hash, difficulty: u128) -> bool {
-        difficulty > difficulty_bytes_as_u128(&hash)
     }
 }
 

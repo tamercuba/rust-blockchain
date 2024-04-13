@@ -1,7 +1,9 @@
-pub trait Hashable {
-    fn get_bytes(&self) -> Vec<u8>;
+use super::Hash;
 
-    fn hash(&self) -> Vec<u8> {
+pub trait Hashable {
+    fn get_bytes(&self) -> Hash;
+
+    fn get_hash(&self) -> Hash {
         let bytes = self.get_bytes();
         crypto_hash::digest(crypto_hash::Algorithm::SHA256, &bytes)
     }
