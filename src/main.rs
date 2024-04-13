@@ -1,5 +1,8 @@
-pub mod domain;
+use rust_blockchain::block::Block;
 
 fn main() {
-    println!("Hello, world!");
+    println!("Genesis block:");
+    let mut block = Block::default();
+
+    println!("{:#?}", &block);
 }
